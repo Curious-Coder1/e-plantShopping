@@ -40,14 +40,14 @@ const CartItem = ({ onContinueShopping }) => {
     } else {
       // Else if it would drop to 0, remove the item entirely
       dispatch(removeItem(item.name));
-    }
-    
-   
+    }   
   };
 
   const handleRemove = (item) => {
     dispatch(removeItem(item.name));
   };
+
+
 
   // Calculate total cost based on quantity for an item
   const calculateTotalCost = (item) => {

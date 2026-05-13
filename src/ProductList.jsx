@@ -1,20 +1,28 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import './ProductList.css'
 import CartItem from './CartItem';
 import { addItem } from './CartSlice';
+
+
 function ProductList({ onHomeClick }) {
     const [showCart, setShowCart] = useState(false);
     const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
-    const [addedToCart, setAddedToCart] = useState({});
+    const [addedToCart, setAddedToCart] = useState({});    
+    
+    const dispatch = useDispatch();
+    const cartItems = useSelector(state => state.cart.items);
+    const totalQuantity = cartItems.reduce((total, item) => total + item.quantity, 0);
+    //const calculateTotalQuantity = () => { return CartItems ? CartItems.reduce((total, item) => total + item.quantity, 0) : 0; };
 
     const handleAddToCart = (product) => {
-                                        dispatch(addItem(product)); // Dispatch the action to add the product to the cart (Redux action)
+            dispatch(addItem(product)); // Dispatch the action to add the product to the cart (Redux action)
 
-                                        setAddedToCart((prevState) => ({ // Update the local state to reflect that the product has been added
-                                            ...prevState, // Spread the previous state to retain existing entries
-                                            [product.name]: true, // Set the current product's name as a key with value 'true' to mark it as added
-                                        }));
-                                        };
+            setAddedToCart((prevState) => ({ // Update the local state to reflect that the product has been added
+                ...prevState, // Spread the previous state to retain existing entries
+                [product.name]: true, // Set the current product's name as a key with value 'true' to mark it as added
+            }));
+            };
 
 
 
@@ -305,11 +313,13 @@ function ProductList({ onHomeClick }) {
                         <div className="product-description">{plant.description}</div> {/* Display plant description */}
                         <div className="product-cost">${plant.cost}</div> {/* Display plant cost */}
                         <button
-                            className="product-button"
-                            onClick={() => handleAddToCart(plant)} // Handle adding plant to cart
-                        >
-                            Add to Cart
+                           className={`product-button ${addedToCart[plant.name] ? 'added' : ''}`}
+                           disabled={addedToCart[plant.name]}
+                           onClick={() => handleAddToCart(plant)}
+                       >
+                           {addedToCart[plant.name] ? 'Added to Cart' : 'Add to Cart'}
                         </button>
+
                         </div>
                     ))}
                     </div>
